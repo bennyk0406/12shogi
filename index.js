@@ -1,24 +1,25 @@
 const fs = require("fs");
-const { login, client } = require("./login");
-const { game } = require("./game");
-const { HooPiece } = require("./piece");
+const { login, client } = require("./dist/login");
+const { game } = require("./dist/game");
+const { HooPiece } = require("./dist/piece");
 const { pieceTable } = require("./dist/piecetable");
 const { user } = require("./dist/user");
-const { ChatRefererType } = require("node-kakao");
-const picturesPath = "./data/pictures";
+const picturesPath = "./data/pictures/";
 
 login();
 
 let createdGame;
 let roomOwner;
-let timeOut;
 
 client.on("message", async function (chat) {
     if (chat.text === "/도움말") {
-        await chat.replayText(fs.readFileSync("./data/info.txt"));
+        await chat.replyText(fs.readFileSync("./data/info.txt").toString());
         return;
     }
-    if (chat.text === "/규칙")
+    if (chat.text === "/규칙") {
+        await chat.replyText(fs.readFileSync("./data/rule.txt").toString());
+        return;
+    }
     if (chat.text === "/게임 시작" && createdGame === undefined) {
         await chat.replyText("게임을 시작합니다.\n\n/게임 참가 명령어를 통해 게임에 참여해주세요.");
         createdGame = new game();
@@ -26,7 +27,7 @@ client.on("message", async function (chat) {
     }
 
     if (createdGame === undefined) return;
-    if (chat.text === "/게임 참가" && createdGame.players.length === 1) {
+    if (chat.text === "/게임 참가" && roomOwner !== undefined) {
         if (chat.sender.id.toString() === roomOwner) {
             await chat.replyText("혼자서 게임할 수 없습니다.");
             return;
@@ -65,6 +66,10 @@ client.on("message", async function (chat) {
     if (!createdGame.started) return;
     if (chat.text.startsWith("이동 ") && createdGame.isTurnOwner(chat.sender.id.toString())) {
         const [prev, dest] = chat.text.slice(3).split(" ").map(i => parseInt(i) - 1);
+        if (prev === NaN || dest === NaN) {
+            await chat.replyText("좌표로는 1부터 12까지의 자연수만 입력할 수 있습니다.");
+            return;
+        }
         if (createdGame.map.raw[prev] !== null && createdGame.map.raw[prev].team === createdGame.getTeamById(chat.sender.id.toString())) {
             const result = createdGame.map.move(createdGame.map.raw[prev], prev, dest);
             if (!result) {
@@ -75,6 +80,7 @@ client.on("message", async function (chat) {
             	if (result.poro.name === "king") {
             	    await chat.replyText(`${user.getNicknameFromId(chat.Channel, chat.sender.id.toString())}님이 왕을 잡아 승리하였습니다.`);
                     createdGame = undefined;
+                    roomOwner = undefined;
                     return;
                 }
                 await chat.replyText(`${user.getNicknameFromId(chat.Channel, chat.sender.id.toString())}님이 상대의 ${pieceTable[result.poro.name]} 말을 잡았습니다!`);
@@ -95,6 +101,7 @@ client.on("message", async function (chat) {
             if (createdGame.hasOtherPiece(createdGame.turnOwner, "king")) {
             	await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}님의 왕이 상대의 진영에서 한 턴 버텨 승리하셨습니다.`);
                 createdGame = undefined;
+                roomOwner = undefined;
                 return;
             }
             const mediaList = createdGame.map.raw.map(i => (
@@ -123,6 +130,10 @@ client.on("message", async function (chat) {
     	const input = chat.text.slice(5).split(" ");
         const selectedPiece = pieceTable[input[0]];
         const selectedPos = parseInt(input[1]) - 1;
+        if (selectedPos === NaN) {
+            await chat.replyText("좌표로는 1부터 12까지의 자연수만 입력할 수 있습니다.");
+            return;
+        }
         const senderTeam = createdGame.players[createdGame.turnOwner].team;
         if (!Object.keys(pieceTable).some(e => e === selectedPiece) || !createdGame.players.find(i => i.id===chat.sender.id.toString()).poro.some(e => e.name === selectedPiece)) {
         	await chat.replyText("내려놓을 수 없는 기물입니다.");
@@ -141,6 +152,7 @@ client.on("message", async function (chat) {
         if (createdGame.hasOtherPiece(createdGame.turnOwner, "king")) {
             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}님의 왕이 상대의 진영에서 한 턴 버텨 승리하셨습니다.`);
             createdGame = undefined;
+            roomOwner = undefined;
             return;
         }
         const mediaList = createdGame.map.raw.map(i => (
@@ -163,6 +175,7 @@ client.on("message", async function (chat) {
     }
     if (chat.text === "/게임 종료") {
         createdGame = undefined;
+        roomOwner = undefined;
         await chat.replyText("게임이 종료되었습니다.");
     }
     if (chat.text === "/테이블") {
