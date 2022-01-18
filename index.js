@@ -4,7 +4,6 @@ const { game } = require("./game");
 const { HooPiece } = require("./piece");
 const { pieceTable } = require("./dist/piecetable");
 const { user } = require("./dist/user");
-const { ChatRefererType } = require("node-kakao");
 const picturesPath = "./data/pictures";
 
 login();
