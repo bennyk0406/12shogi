@@ -1,0 +1,27 @@
+{
+  "name": "12shogi",
+  "version": "1.0.0",
+  "description": "This is a program to play \"12shogi\" game in KakaoTalk.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennyk0406/12shogi.git"
+  },
+  "keywords": [
+    "12shogi",
+    "bot"
+  ],
+  "author": "Jari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bennyk0406/12shogi/issues"
+  },
+  "homepage": "https://github.com/bennyk0406/12shogi#readme",
+  "dependencies": {
+    "node-kakao": "^3.1.10",
+    "readline": "^1.3.0"
+  }
+}

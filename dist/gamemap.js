@@ -1,13 +1,13 @@
-const { JaPiece, JangPiece, SangPiece, KingPiece } = require('./piece');
+const { JaPiece, JangPiece, SangPiece, KingPiece } = require("./piece");
 
 class gameMap {
     constructor(game) {
     	this.game = game;
         this.raw = [
-            new JangPiece('red'),   new KingPiece('red'),   new SangPiece('red'), 
-            null,                   new JaPiece('red'),     null, 
-            null,                   new JaPiece('green'),   null, 
-            new SangPiece('green'), new KingPiece('green'), new JangPiece('green')
+            new JangPiece("red"),   new KingPiece("red"),   new SangPiece("red"), 
+            null,                   new JaPiece("red"),     null, 
+            null,                   new JaPiece("green"),   null, 
+            new SangPiece("green"), new KingPiece("green"), new JangPiece("green")
         ];
     }
     getCoordinate(index) {
@@ -22,15 +22,14 @@ class gameMap {
             }
             poro = this.raw[dest];
             if (poro !== undefined) {
-            	if (poro.name === 'hoo') {
+            	if (poro.name === "hoo") {
             	    poro = new JaPiece(piece.team);
-                    poro.name = 'ja';
-                    this.game.addPoro(piece.team, poro);
+                    poro.name = "ja";
             	}
                 else {
                 	poro.team = piece.team;
-                    this.game.addPoro(piece.team, poro);
                 }
+                this.game.addPoro(piece.team, poro);
             }
         }
         this.raw[dest] = piece;
@@ -38,19 +37,19 @@ class gameMap {
         return {poro};
     }
     setPoroPos(team, name, pos) {
-    	const poroList = this.game.players.find(i => i.team===team).poro;
+    	const poroList = this.game.players.find(i => i.team === team).poro;
     	switch (name) {
-    	    case 'ja': 
+    	    case "ja": 
                 this.raw[pos] = new JaPiece(team);
                 break;
-            case 'sang':
+            case "sang":
                 this.raw[pos] = new SangPiece(team);
                 break;
-            case 'jang':
+            case "jang":
                 this.raw[pos] = new JangPiece(team);
                 break;
     	}
-        poroList.splice(poroList.indexOf(name),1);
+        poroList.splice(poroList.findIndex(e => e.name === name), 1);
         return true;
     }
 }
