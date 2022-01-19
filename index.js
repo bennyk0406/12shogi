@@ -183,7 +183,7 @@ client.on("message", async function (chat) {
     	const input = chat.text.slice(5).split(" ");
         const selectedPiece = pieceTable[input[0]];
         const selectedPos = parseInt(input[1]) - 1;
-        if (coordinate.some(e => e === selectedPos)) {
+        if (!coordinate.some(e => e === selectedPos)) {
             await chat.replyText("좌표로는 1부터 12까지의 자연수만 입력할 수 있습니다.");
             return;
         }
