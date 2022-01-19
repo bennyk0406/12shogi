@@ -1,3 +1,4 @@
+const { ChatFeed } = require("node-kakao");
 const { gameMap } = require("./gamemap");
 class game {
     constructor() {
@@ -5,6 +6,7 @@ class game {
         this.turnOwner = null;
         this.started = false;
         this.map = new gameMap(this);
+        this.timeout = false;
     }
     addPlayer(id, team) {
         this.players.push({id, team, poro: []});
@@ -47,6 +49,10 @@ class game {
     }
     isTurnOwner(id) {
         return id === this.players[this.turnOwner].id;
+    }
+    async alertLeftTime(chat, time) {
+        clearTimeout(this.timeout);
+        await chat.replyText(`${time}초 남았습니다.`);
     }
 }
 exports.game = game;

@@ -14,7 +14,7 @@ const login = function () {
         })
         .catch(function (error) {
             if (error.status === -100) {
-                const rl = readLine.createInterface({
+                const rl = readline.createInterface({
                     input: process.stdin,
                     output: process.stdout
                 });
@@ -22,7 +22,7 @@ const login = function () {
                 rl.question("Passcode : ", function (answer) {
                     client.Auth.registerDevice(answer, account.email, account.password, true)
                         .then(function () {
-                            console.log("Login!");        
+                            console.log("Login Success.");
                             process.exit();
                         });
                 });
