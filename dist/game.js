@@ -1,5 +1,5 @@
-const { ChatFeed } = require("node-kakao");
 const { gameMap } = require("./gamemap");
+
 class game {
     constructor() {
         this.players = [];
