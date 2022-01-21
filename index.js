@@ -6,7 +6,7 @@ const { pieceTable } = require("./dist/piecetable");
 const { user } = require("./dist/user");
 const { teamTable } = require("./dist/team");
 const picturesPath = "./data/pictures/";
-const coordinate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const coordinate = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 login();
 
@@ -118,7 +118,7 @@ client.on("message", async function (chat) {
             if (result.poro !== undefined) {
             	if (result.poro.name === "king") {
             	    await chat.replyText(`${user.getNicknameFromId(chat.Channel, chat.sender.id.toString())}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님이 상대의 왕을 잡으셨습니다.`);
-                    await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, Math.abs(createdGame.turnOwner - 1))}님의 승리로 게임을 종료합니다.`);
+                    await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}님의 승리로 게임을 종료합니다.`);
                     createdGame = undefined;
                     roomOwner = undefined;
                     timeLimit = undefined;
