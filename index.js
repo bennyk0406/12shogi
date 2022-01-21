@@ -48,7 +48,7 @@ client.on("message", async function (chat) {
         await chat.replyText("게임이 종료되었습니다.");
         return;
     }
-    if (chat.text === "/게임 참가" && roomOwner !== undefined) {
+    if (chat.text === "/게임 참가" && roomOwner !== undefined && !createdGame.started) {
         if (Math.random() < 0.5) {
             createdGame.addPlayer(chat.sender.id.toString(), "green");
             createdGame.addPlayer(roomOwner, "red");
