@@ -36,9 +36,6 @@ class game {
             return "red";
         }
     }
-    getTeamById(id) {
-        return this.players.find(i => i.id === id).team;
-    }
     hasOtherPiece(turnOwner, piece) {
         if (turnOwner === 0) {
             return this.map.raw.slice(0,3).some(i => i !== null && i.name === piece && i.team === "green");
