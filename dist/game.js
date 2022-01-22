@@ -9,7 +9,11 @@ class game {
         this.timeout = false;
     }
     addPlayer(id, team) {
-        this.players.push({id, team, poro: []});
+        this.players.push({
+            id, 
+            team, 
+            poro: []
+        });
     }
     addPoro(team, poro) {
         this.players.find(i => i.team === team).poro.push(poro);
@@ -52,4 +56,5 @@ class game {
         await chat.replyText(`${time}초 남았습니다.`);
     }
 }
+
 exports.game = game;

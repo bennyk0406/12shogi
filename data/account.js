@@ -4,5 +4,4 @@ const account = {
     clientName: "clientName",
     uuid: "uuid"
 };
-
 exports.account = account;

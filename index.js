@@ -26,7 +26,7 @@ client.on("message", async function (chat) {
     if (chat.text.startsWith("/게임 시작") && createdGame === undefined) {
         const input = parseInt(chat.text.slice(6));
         if (isNaN(input)) {
-            await chat.replyText("게임을 시작합니다.\n/게임 참가 명령어를 통해 게임에 참여해주세요.\n\n> 시간 제한 : False");
+            await chat.replyText("게임을 시작합니다.\n/게임 참가 명령어를 통해 게임에 참여해주세요.\n\n> 시간 제한 : 없음");
             timeLimit = false;
         }
         else {
@@ -42,13 +42,7 @@ client.on("message", async function (chat) {
     }
 
     if (createdGame === undefined) return;
-    if (chat.text === "/게임 종료") {
-        createdGame = undefined;
-        roomOwner = undefined;
-        await chat.replyText("게임이 종료되었습니다.");
-        return;
-    }
-    if (chat.text === "/게임 참가" && roomOwner !== undefined && !createdGame.started) {
+    if (chat.text === "/게임 참가" && !createdGame.started) {
         if (Math.random() < 0.5) {
             createdGame.addPlayer(chat.sender.id.toString(), "green");
             createdGame.addPlayer(roomOwner, "red");
@@ -97,6 +91,12 @@ client.on("message", async function (chat) {
         }
         await chat.replyText(`게임을 시작합니다.\n\n레드팀 : ${nickname.red}님\n그린팀 : ${nickname.green}님`);
         await chat.replyText(`선 플레이어는 ${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님입니다.`);
+    }
+    if (chat.text === "/게임 종료" && (!createdGame.started && roomOwner === chat.sender.id.toString()) || (createdGame.started && createdGame.players.some(e => e.id === chat.sender.id.toString()))) {
+        createdGame = undefined;
+        roomOwner = undefined;
+        await chat.replyText("게임이 종료되었습니다.");
+        return;
     }
 
     if (!createdGame.started) return;
@@ -196,8 +196,7 @@ client.on("message", async function (chat) {
             await chat.replyText("좌표로는 1부터 12까지의 자연수만 입력할 수 있습니다.");
             return;
         }
-        const senderTeam = createdGame.players[createdGame.turnOwner].team;
-        if (!Object.keys(pieceTable).some(e => e === selectedPiece) || !createdGame.players.find(i => i.id===chat.sender.id.toString()).poro.some(e => e.name === selectedPiece)) {
+        if (!Object.keys(pieceTable).some(e => e === selectedPiece) || !createdGame.players.find(i => i.team === createdGame.getTeamByIndex(createdGame.turnOwner)).poro.some(e => e.name === selectedPiece)) {
         	await chat.replyText("내려놓을 수 없는 기물입니다.");
             return;
         }
@@ -205,14 +204,14 @@ client.on("message", async function (chat) {
         	await chat.replyText("내려놓을 수 없는 위치입니다.");
             return;
         }
-        if ((senderTeam === "green" && selectedPos >= 0 && selectedPos <= 2) || (senderTeam === "red" && selectedPos >= 9 && selectedPos <= 11)) {
+        if ((createdGame.getTeamByIndex(createdGame.turnOwner) === "green" && selectedPos <= 2) || (createdGame.getTeamByIndex(createdGame.turnOwner) === "red" && selectedPos >= 9)) {
         	await chat.replyText("상대의 진영에는 말을 내려놓을 수 없습니다.");
             return;
         }
         if (!!timeLimit) {
             clearTimeout(createdGame.timeout);
         }
-        createdGame.map.setPoroPos(senderTeam, selectedPiece, selectedPos);
+        createdGame.map.setPoroPos(createdGame.getTeamByIndex(createdGame.turnOwner), selectedPiece, selectedPos);
         createdGame.changeTurnOwner();
         if (createdGame.hasOtherPiece(createdGame.turnOwner, "king")) {
             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님의 왕이 상대의 진영에서 한 턴 버텼습니다.`);
@@ -280,7 +279,7 @@ client.on("message", async function (chat) {
         return;
     }
     if (chat.text === "/포로") {
-    	await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, 0)}(${teamTable[createdGame.getTeamByIndex(0)]})님 : ${createdGame.players[0].poro.map(i => pieceTable[i.name]).sort().join(", ")}\n${user.getNicknameFromIndex(chat.Channel, createdGame, 1)}(${teamTable[createdGame.getTeamByIndex(1)]})님 : ${createdGame.players[1].poro.map(i => pieceTable[i.name]).sort().join(", ")}`);
+    	await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, 1)}(${teamTable[createdGame.getTeamByIndex(1)]})님 : ${createdGame.players[1].poro.map(i => pieceTable[i.name]).sort().join(", ")}\n${user.getNicknameFromIndex(chat.Channel, createdGame, 0)}(${teamTable[createdGame.getTeamByIndex(0)]})님 : ${createdGame.players[0].poro.map(i => pieceTable[i.name]).sort().join(", ")}`);
         return;
     }
 });

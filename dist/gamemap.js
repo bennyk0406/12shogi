@@ -53,4 +53,5 @@ class gameMap {
         return true;
     }
 }
+
 exports.gameMap = gameMap;
