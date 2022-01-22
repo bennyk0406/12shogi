@@ -92,7 +92,7 @@ client.on("message", async function (chat) {
         await chat.replyText(`게임을 시작합니다.\n\n레드팀 : ${nickname.red}님\n그린팀 : ${nickname.green}님`);
         await chat.replyText(`선 플레이어는 ${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님입니다.`);
     }
-    if (chat.text === "/게임 종료" && (!createdGame.started && roomOwner === chat.sender.id.toString()) || (createdGame.started && createdGame.players.some(e => e.id === chat.sender.id.toString()))) {
+    if (chat.text === "/게임 종료" && ((!createdGame.started && roomOwner === chat.sender.id.toString()) || (createdGame.started && createdGame.players.some(e => e.id === chat.sender.id.toString())))) {
         createdGame = undefined;
         roomOwner = undefined;
         await chat.replyText("게임이 종료되었습니다.");
