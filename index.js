@@ -81,6 +81,7 @@ client.on("message", async function (chat) {
                             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님이 제한 시간 안에 수를 두지 못하여 패배하셨습니다.`);
                             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, Math.abs(createdGame.turnOwner - 1))}님의 승리로 게임을 종료합니다.`);
                             roomOwner = undefined;
+                            clearTimeout(createdGame.timeout);
                             createdGame = undefined;
                             timeLimit = undefined;
                             return;
@@ -175,6 +176,7 @@ client.on("message", async function (chat) {
                                 await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님이 제한 시간 안에 수를 두지 못하여 패배하셨습니다.`);
                                 await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, Math.abs(createdGame.turnOwner - 1))}님의 승리로 게임을 종료합니다.`);
                                 roomOwner = undefined;
+                                clearTimeout(createdGame.timeout);
                                 createdGame = undefined;
                                 timeLimit = undefined;
                                 return;
@@ -249,6 +251,7 @@ client.on("message", async function (chat) {
                             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, createdGame.turnOwner)}(${teamTable[createdGame.getTeamByIndex(createdGame.turnOwner)]})님이 제한 시간 안에 수를 두지 못하여 패배하셨습니다.`);
                             await chat.replyText(`${user.getNicknameFromIndex(chat.Channel, createdGame, Math.abs(createdGame.turnOwner - 1))}님의 승리로 게임을 종료합니다.`);
                             roomOwner = undefined;
+                            clearTimeout(createdGame.timeout);
                             createdGame = undefined;
                             timeLimit = undefined;
                             return;
