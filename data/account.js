@@ -1,7 +1,8 @@
 const account = {
     email: "email",
-    password: "password",
+    password: "pw",
     clientName: "clientName",
     uuid: "uuid"
 };
+
 exports.account = account;

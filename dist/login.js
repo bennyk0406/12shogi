@@ -28,7 +28,7 @@ const login = function () {
                 });
             } 
             else {
-                console.log(JSON.stringify(error, null, 2));
+                console.log(JSON.stringify(error, null, 4));
             }
         });
 };

@@ -11,33 +11,30 @@ class gameMap {
         ];
     }
     getCoordinate(index) {
-        return {x: index%3, y: Math.floor(index/3)};
+        return {x: index % 3, y: Math.floor(index / 3)};
     }
-    move(piece, prev, dest) {
+    move(roomId, piece, prev, dest) {
         if (!piece.checkValid(this, prev, dest)) return false;
-        let poro;
+        let captive;
         if (this.raw[dest] !== null) {
-            if (this.raw[dest].team === this.game.players[this.game.turnOwner].team) {
+            if (this.raw[dest].team === this.game[roomId].turnOwner) {
             	return false;
             }
-            poro = this.raw[dest];
-            if (poro !== undefined) {
-            	if (poro.name === "hoo") {
-            	    poro = new JaPiece(piece.team);
-                    poro.name = "ja";
-            	}
-                else {
-                	poro.team = piece.team;
-                }
-                this.game.addPoro(piece.team, poro);
+            captive = this.raw[dest];
+            if (captive.name === "hoo") {
+                captive = new JaPiece(piece.team);
             }
+            else {
+                captive.team = piece.team;
+            }
+            this.game.addCaptive(roomId, piece.team, captive);
         }
         this.raw[dest] = piece;
         this.raw[prev] = null;
-        return {poro};
+        return { captive };
     }
-    setPoroPos(team, name, pos) {
-    	const poroList = this.game.players.find(i => i.team === team).poro;
+    setCaptivePos(roomId, team, name, pos) {
+    	const captiveList = this.game[roomId].players[Object.keys(this.game[roomId].players).find(i => i === team)].captive;
     	switch (name) {
     	    case "ja": 
                 this.raw[pos] = new JaPiece(team);
@@ -49,7 +46,7 @@ class gameMap {
                 this.raw[pos] = new JangPiece(team);
                 break;
     	}
-        poroList.splice(poroList.findIndex(e => e.name === name), 1);
+        captiveList.splice(captiveList.findIndex(e => e.name === name), 1);
         return true;
     }
 }

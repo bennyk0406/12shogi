@@ -1,7 +1,7 @@
 class user {
     constructor() {}
-    static getNicknameFromIndex(channel, game, index) {
-        return channel.getUserInfoId(game.players[index].id).Nickname;
+    static getNicknameFromTeam(channel, gameRoom, team) {
+        return channel.getUserInfoId(gameRoom.players[team].id).Nickname;
     }
     static getNicknameFromId(channel, id) {
         return channel.getUserInfoId(id).Nickname;
